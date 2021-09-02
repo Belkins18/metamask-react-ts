@@ -11,6 +11,7 @@ import {
   ListItemText,
   Avatar,
   Typography,
+  Container
 } from "@material-ui/core";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       alignItems: "center",
       width: "100%",
-      backgroundColor: theme.palette.background.paper,
+      paddingTop: theme.spacing(4)
     },
     small: {
       width: theme.spacing(4),
@@ -101,26 +102,45 @@ export default function SimpleList() {
   };
 
   useEffect(() => {
+      console.log(web3);
     async function init() {
-      await getAccounts();
-      ethereum.on("accountsChanged", (accounts: Array<string>): void =>
-        ethereumAccountsChange(accounts)
-      );
+      try {
+        await getAccounts();
+
+        ethereum.on("accountsChanged", (accounts: Array<string>): void =>
+          ethereumAccountsChange(accounts)
+        );
+      } catch (error) {
+        
+        toast.error(`${error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     }
 
     web3 && init();
+    return () => {
+        if (web3) {
+          ethereum.off("accountsChanged", (accounts: Array<string>) =>
+            ethereumAccountsChange(accounts)
+          );
+        }
+      };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3]);
 
   useEffect(() => {
     address && getBalanceETH();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   useEffect(() => {
     address && getBalanceONX();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, address]);
 
   return (
-    <div className={classes.root}>
+    <Container maxWidth="sm" className={classes.root}>
       {address ? (
         <>
           <Typography variant="body1" component="h2">
@@ -156,6 +176,6 @@ export default function SimpleList() {
           Reconnect you metamask!
         </Typography>
       )}
-    </div>
+    </Container>
   );
 }
