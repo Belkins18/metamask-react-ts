@@ -109,14 +109,17 @@ export default function SimpleList() {
     }
 
     web3 && init();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3]);
 
   useEffect(() => {
     address && getBalanceETH();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   useEffect(() => {
     address && getBalanceONX();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, address]);
 
   return (
