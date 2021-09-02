@@ -11,6 +11,7 @@ import {
   ListItemText,
   Avatar,
   Typography,
+  Container
 } from "@material-ui/core";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       alignItems: "center",
       width: "100%",
-      backgroundColor: theme.palette.background.paper,
+      paddingTop: theme.spacing(4)
     },
     small: {
       width: theme.spacing(4),
@@ -101,6 +102,7 @@ export default function SimpleList() {
   };
 
   useEffect(() => {
+      console.log(web3);
     async function init() {
       try {
         await getAccounts();
@@ -109,6 +111,7 @@ export default function SimpleList() {
           ethereumAccountsChange(accounts)
         );
       } catch (error) {
+        
         toast.error(`${error}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -116,6 +119,13 @@ export default function SimpleList() {
     }
 
     web3 && init();
+    return () => {
+        if (web3) {
+          ethereum.off("accountsChanged", (accounts: Array<string>) =>
+            ethereumAccountsChange(accounts)
+          );
+        }
+      };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3]);
 
@@ -130,7 +140,7 @@ export default function SimpleList() {
   }, [contract, address]);
 
   return (
-    <div className={classes.root}>
+    <Container maxWidth="sm" className={classes.root}>
       {address ? (
         <>
           <Typography variant="body1" component="h2">
@@ -166,6 +176,6 @@ export default function SimpleList() {
           Reconnect you metamask!
         </Typography>
       )}
-    </div>
+    </Container>
   );
 }
