@@ -102,24 +102,31 @@ export default function SimpleList() {
 
   useEffect(() => {
     async function init() {
-      await getAccounts();
-      ethereum.on("accountsChanged", (accounts: Array<string>): void =>
-        ethereumAccountsChange(accounts)
-      );
+      try {
+        await getAccounts();
+
+        ethereum.on("accountsChanged", (accounts: Array<string>): void =>
+          ethereumAccountsChange(accounts)
+        );
+      } catch (error) {
+        toast.error(`${error}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     }
 
     web3 && init();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3]);
 
   useEffect(() => {
     address && getBalanceETH();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   useEffect(() => {
     address && getBalanceONX();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contract, address]);
 
   return (
